@@ -3,11 +3,12 @@ import json
 def unsure_ai_poetry(ai, prev, next):
     system_prompt = [
         '''
-        Write a verse on a topic provided by the user.
-        User send you two topics as JSON array contains two strings. Strings can be empty.
-        If exists, second topic is more significant than first.
+        Write a verse on a topics provided by the user.
         ''',
-        "The poem must be no more than eight lines, lines must be no more than three words",
+        '''
+        The poem should be no more than eight lines.
+        Lines must be no more than three words.
+        ''',
         '''
         Return ONLY json array of strings, contains poem lines.
 
@@ -17,7 +18,9 @@ def unsure_ai_poetry(ai, prev, next):
     ]
 
     system_prompt_messages = [{"role": "system", "content": p} for p in system_prompt]
-    user_prompt_messages = [{"role": "user", "content": json.dumps([prev, next])}]
+    user_prompt_messages = [{"role": "user", "content": ". ".join([prev, next])}]
+
+    print("user prompt:", user_prompt_messages)
 
     response = ai.ChatCompletion.create(
         model="gpt-3.5-turbo",
