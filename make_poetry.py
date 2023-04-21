@@ -7,7 +7,7 @@ def unsure_make_gpt_poetry(ai, prev, next):
         User send you two topics as JSON array contains two strings. Strings can be empty.
         If exists, second topic is more significant than first.
         ''',
-        "The poem should be no more than eight lines",
+        "The poem must be no more than eight lines, lines must be no more than three words",
         '''
         Return ONLY json array of strings, contains poem lines.
 
@@ -39,5 +39,6 @@ def make_gpt_poetry(ai, prev, next=""):
         res = unsure_make_gpt_poetry(ai, prev, next)
     
     # TODO: remove empty lines
-    
+    # TODO: remove all except [a-Z]
+
     return res
