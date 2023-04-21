@@ -1,6 +1,6 @@
 import json
 
-def unsure_make_gpt_poetry(ai, prev, next):
+def unsure_ai_poetry(ai, prev, next):
     system_prompt = [
         '''
         Write a verse on a topic provided by the user.
@@ -33,10 +33,10 @@ def unsure_make_gpt_poetry(ai, prev, next):
         print("raw answer:", response_content)
         return []
 
-def make_gpt_poetry(ai, prev, next=""):
+def ai_poetry(ai, prev, next=""):
     res = []
     while res == []:
-        res = unsure_make_gpt_poetry(ai, prev, next)
+        res = unsure_ai_poetry(ai, prev, next)
     
     # TODO: remove empty lines
     # TODO: remove all except [a-Z]
