@@ -1,7 +1,7 @@
 import openai
 
 import configuration
-from make_poetry import ai_poetry
+from ai_poetry import ai_poetry
 
 openai.api_key = configuration.api_key
 
