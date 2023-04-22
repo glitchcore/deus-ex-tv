@@ -5,10 +5,10 @@ import random
 import shutil
 from time import sleep
 
-def slow_print(text, timeout=0.1):
+def slow_print(text, timeout=0.04, pause=0.3):
     for char in text:
         print(char, end='', flush=True)
-        sleep(timeout if char not in ['.', ',', '?', ':', '!'] else timeout * 4)
+        sleep(timeout if char not in ['.', ',', '?', ':', '!'] else pause)
 
 def blink_message(message, delay):
     # hide cursor
