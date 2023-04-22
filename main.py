@@ -1,5 +1,6 @@
 import openai
 from time import sleep
+import random
 import os
 
 import configuration
@@ -8,8 +9,10 @@ from ai_describer import ai_describe
 
 openai.api_key = configuration.api_key
 
+TOPIC_LEN = 5
+
 if __name__ == "__main__":
-    description = "void"
+    topics = ["nothing"]
 
     while True:
         os.system('clear')
@@ -17,11 +20,10 @@ if __name__ == "__main__":
 
         # TODO: clear user input, remain [0-9a-Z\.\,\:\-]
 
-        # user_description = ai_describe(openai, user_input)
+        topics += [ai_describe(openai, user_input)]
+        topics = topics[-TOPIC_LEN:]
 
-        print("user description:", user_input)
-
-        poetry = ai_poetry(openai, description, user_input)
+        poetry = ai_poetry(openai, topics)
 
         print("=== poetry ===")
         for line in poetry:
@@ -29,8 +31,11 @@ if __name__ == "__main__":
         print()
         print()
 
-        description = ai_describe(openai, poetry)
-
-        print("description:", description)
+        # add random line as a topic
+        try:
+            topics += [random.choice(poetry)]
+            topics = topics[-TOPIC_LEN:]
+        except Exception:
+            print(poetry)
 
         input("[press enter to continue]")

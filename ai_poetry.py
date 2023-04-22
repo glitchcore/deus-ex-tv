@@ -1,45 +1,40 @@
-import json
+import re
 
-def unsure_ai_poetry(ai, prev, next):
+def unsure_ai_poetry(ai, topics):
     system_prompt = [
         '''
-        Write a verse on a topics provided by the user.
-        ''',
-        '''
-        The poem should be no more than eight lines.
-        Lines must be no more than three words.
-        ''',
-        '''
-        Return ONLY json array of strings, contains poem lines.
-
-        Do not send me nothing except json, your answer must be valid json!
-        Do not send any explanation or description.
+Write a verse based on topic provided by the user.
+The poem should be no more than eight lines.
+Start poem by tag <poem>.
+End poem by tag </poem>
+Do not send any explanation or description.
         '''
     ]
 
     system_prompt_messages = [{"role": "system", "content": p} for p in system_prompt]
-    user_prompt_messages = [{"role": "user", "content": ". ".join([prev, next])}]
+    user_prompt_messages = [{"role": "user", "content": ". ".join(topics)}]
 
     print("user prompt:", user_prompt_messages)
 
     response = ai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=(user_prompt_messages + system_prompt_messages)
+        messages=(user_prompt_messages + system_prompt_messages),
+        temperature=1
     )
 
     response_content = response.choices[0].message.content
-    
-    try:
-        res = json.loads(response_content)
-        return res
-    except json.decoder.JSONDecodeError:
-        print("raw answer:", response_content)
-        return []
 
-def ai_poetry(ai, prev, next=""):
+    poem = re.search('<poem>(.*?)</poem>', response_content, re.DOTALL)
+    poem = poem.group(1)
+    poem = poem.split("\n")
+    poem = [x for x in poem if len(x) > 2]
+    
+    return poem
+
+def ai_poetry(ai, topics):
     res = []
-    while res == []:
-        res = unsure_ai_poetry(ai, prev, next)
+    while res == [] or type(res) != list:
+        res = unsure_ai_poetry(ai, topics)
     
     # TODO: remove empty lines
     # TODO: remove all except [a-Z]
