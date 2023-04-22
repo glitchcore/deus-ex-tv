@@ -1,11 +1,13 @@
 import openai
 from time import sleep
-import random
 import os
+
 
 import configuration
 from ai_poetry import ai_poetry
 from ai_describer import ai_describe
+from fate_gen import ai_answer
+from glitch_ui import *
 
 openai.api_key = configuration.api_key
 
@@ -16,11 +18,23 @@ if __name__ == "__main__":
 
     while True:
         os.system('clear')
-        user_input = input("TYPE YOUR IDENTITY: ")
+        print()
+        user_input = input("  TYPE YOUR IDENTITY: ")
+
+        print("")
+
+        print("  [WAIT FOR MACHINE...]", end='', flush=True)
 
         # TODO: clear user input, remain [0-9a-Z\.\,\:\-]
 
-        topics += [ai_describe(openai, user_input)]
+        answer = ai_answer(openai, user_input)
+
+        print("\r                          \r", end='', flush=True)
+        slow_print(answer, 0.1)
+        print()
+        print()
+
+        '''topics += [ai_describe(openai, user_input)]
         topics = topics[-TOPIC_LEN:]
 
         poetry = ai_poetry(openai, topics)
@@ -37,5 +51,12 @@ if __name__ == "__main__":
             topics = topics[-TOPIC_LEN:]
         except Exception:
             print(poetry)
+            '''
 
-        input("[press enter to continue]")
+        blink_message("  [PRESS ENTER TO CONTINUE]", 0.4)
+
+        random_chars(0.1, 1000)
+        sleep(0.2)
+        os.system('clear')
+        sleep(0.8)
+        
