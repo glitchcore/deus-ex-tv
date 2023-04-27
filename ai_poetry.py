@@ -5,8 +5,13 @@ def unsure_ai_poetry(ai, topics):
         '''
 Write a verse based on topic provided by the user.
 The poem should be no more than eight lines.
-Start poem by tag <poem>.
-End poem by tag </poem>
+Write poem in english, russian, and georgian.
+Start poem in russian by tag <ru>
+End poem in russian by tag </ru>
+Start poem in english by tag <en>
+End poem in english by tag </en>
+Start poem in georgian by tag <ka>
+End poem in geirgian by tag </ka>
 Do not send any explanation or description.
         '''
     ]
@@ -24,19 +29,34 @@ Do not send any explanation or description.
 
     response_content = response.choices[0].message.content
 
-    poem = re.search('<poem>(.*?)</poem>', response_content, re.DOTALL)
-    poem = poem.group(1)
-    poem = poem.split("\n")
-    poem = [x for x in poem if len(x) > 2]
+    def content_to_poem(content, lang):
+        poem = re.search(f"<{lang}>(.*?)</{lang}>", content, re.DOTALL)
+        poem = poem.group(1)
+        poem = poem.split("\n")
+        poem = [re.sub("[^a-zA-Zа-яА-Яა-ჰ\s]+", "", x) for x in poem]
+        poem = [x for x in poem if len(x) > 2]
+
+        return poem
     
-    return poem
+    try:
+        res = {
+            "ru": content_to_poem(response_content, "ru"),
+            "en": content_to_poem(response_content, "en"),
+            "ka": content_to_poem(response_content, "ka"),
+        }
+
+        if len(res["ru"]) != len(res["en"]) or len(res["ru"]) != len(res["ka"]):
+            return None
+        
+        return res
+    except Exception:
+        return None
 
 def ai_poetry(ai, topics):
-    res = []
-    while res == [] or type(res) != list:
+    res = None
+    while res is None:
         res = unsure_ai_poetry(ai, topics)
     
-    # TODO: remove empty lines
     # TODO: remove all except [a-Z]
 
     return res
