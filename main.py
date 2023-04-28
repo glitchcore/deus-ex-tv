@@ -1,7 +1,8 @@
 import openai
 from time import sleep
 import os
-import sqlite3
+import re
+import requests
 
 import configuration
 from fate_gen import ai_answer
@@ -10,18 +11,16 @@ from glitch_ui import *
 openai.api_key = configuration.api_key
 
 if __name__ == "__main__":
-    conn = sqlite3.connect(configuration.db)
-
     while True:
         os.system('clear')
         print()
         user_input = input("  TYPE YOUR IDENTITY: ")
+        user_input = re.sub("[^a-zA-Z\s]+", "", user_input)
 
-        # TODO: clear user input, remain [0-9a-Z\.\,\:\-]
-
-        c = conn.cursor()
-        c.execute('''INSERT INTO user_requests (request) VALUES (?)''', (user_input,))
-        conn.commit()
+        try:
+            requests.post("http://localhost:8002", data={"prompt": user_input}, timeout=2)
+        except Exception:
+            pass
 
         print("")
 

@@ -29,7 +29,11 @@ Do not send any explanation or description.
         messages=(user_prompt_messages + system_prompt_messages),
     )
 
-    return parse_poem(response.choices[0].message.content)
+    response = response.choices[0].message.content
+
+    print(f"translation to {lang}:", response)
+
+    return parse_poem(response)
 
 def unsure_ai_poetry(ai, topics):
     system_prompt = [
@@ -54,6 +58,8 @@ Do not send any explanation or description.
     )
 
     response_content = response.choices[0].message.content
+
+    print("en poem:", response_content)
 
     en_poem = parse_poem(response_content)
 
