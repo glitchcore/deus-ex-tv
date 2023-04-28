@@ -3,14 +3,22 @@ from time import sleep
 import os
 import re
 import requests
+import random
 
 import configuration
 from fate_gen import ai_answer
 from glitch_ui import *
+from offline import offline_answers
 
 openai.api_key = configuration.api_key
 
 if __name__ == "__main__":
+    '''
+    while True:
+        a = ai_answer(openai, "no user input, imagine your own and improvise")
+        print(f"\"{a}\",")
+    '''
+
     while True:
         os.system('clear')
         print()
@@ -29,6 +37,9 @@ if __name__ == "__main__":
         # TODO in case of timeout get answer from static list
 
         answer = ai_answer(openai, user_input)
+
+        if answer is None:
+            answer = random.choice(offline_answers)
 
         print("\r                          \r", end='', flush=True)
         slow_print(answer)

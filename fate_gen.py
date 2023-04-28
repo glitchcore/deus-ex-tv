@@ -13,12 +13,16 @@ Send no more two sentences.
     system_prompt_messages = [{"role": "system", "content": p} for p in system_prompt]
     user_prompt_messages = [{"role": "user", "content": take}]
 
-    response = ai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=(user_prompt_messages + system_prompt_messages),
-        temperature=1
-    )
+    try:
+        response = ai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=(user_prompt_messages + system_prompt_messages),
+            temperature=1,
+            request_timeout=8
+        )
 
-    response_content = response.choices[0].message.content
+        response_content = response.choices[0].message.content
 
-    return response_content
+        return response_content
+    except Exception:
+        return None
